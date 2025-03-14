@@ -1,0 +1,20 @@
+Instructions to compile the application into an .exe file:
+
+1. Install Python 3.11 on your Windows machine
+2. Install required packages:
+   ```
+   pip install flask cryptography pyinstaller
+   ```
+
+3. Create the executable using PyInstaller:
+   ```
+   pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" run.py
+   ```
+
+4. Find the executable in the `dist` folder
+5. When you run the .exe:
+   - It will start a local server
+   - Automatically open your default browser
+   - Access the encryption tool through the browser interface
+
+Note: The .exe will only work on Windows machines. For other operating systems, you'll need to compile separately.
