@@ -20,11 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('themeColor', color);
     }
 
-    // Load saved theme preferences
+    // Load saved theme preferences or set defaults
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        setTheme(savedTheme);
-    }
+    setTheme(savedTheme || 'dark'); // Set dark as default if no theme is saved
 
     const savedColor = localStorage.getItem('themeColor');
     if (savedColor) {
