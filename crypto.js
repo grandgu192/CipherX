@@ -27,35 +27,30 @@ const arrayBufferToString = (buffer) => {
 
 // Generate a secure random key
 async function generateKey() {
-    // Generate a random 32-byte key
-    const key = await window.crypto.subtle.generateKey(
-        {
-            name: "AES-GCM",
-            length: 256
-        },
-        true,
-        ["encrypt", "decrypt"]
-    );
-    const exportedKey = await window.crypto.subtle.exportKey("raw", key);
-    return arrayBufferToBase64(exportedKey);
+    const keyBytes = window.crypto.getRandomValues(new Uint8Array(32));
+    return arrayBufferToBase64(keyBytes.buffer);
 }
 
 // Import key from base64 format
 async function importKey(keyBase64) {
-    const keyData = base64ToArrayBuffer(keyBase64);
-    if (keyData.byteLength !== 32) {
-        throw new Error("Key must be 32 bytes long");
+    try {
+        const keyData = base64ToArrayBuffer(keyBase64);
+        if (keyData.byteLength !== 32) {
+            throw new Error(`Invalid key length: ${keyData.byteLength} bytes. Expected 32 bytes.`);
+        }
+        return await window.crypto.subtle.importKey(
+            "raw",
+            keyData,
+            { name: "AES-GCM" },
+            false, // extractable
+            ["encrypt", "decrypt"]
+        );
+    } catch (error) {
+        if (error.message.includes("Invalid key length")) {
+            throw error;
+        }
+        throw new Error("Invalid key format. Please ensure you're using the correct key.");
     }
-    return await window.crypto.subtle.importKey(
-        "raw",
-        keyData,
-        {
-            name: "AES-GCM",
-            length: 256
-        },
-        true,
-        ["encrypt", "decrypt"]
-    );
 }
 
 async function encrypt(text, keyBase64) {
@@ -89,14 +84,18 @@ async function decrypt(encryptedBase64, keyBase64) {
         const key = await importKey(keyBase64);
         const encryptedData = base64ToArrayBuffer(encryptedBase64);
 
+        if (encryptedData.byteLength < 12) {
+            throw new Error("Invalid encrypted data format");
+        }
+
         // Extract IV and data
-        const iv = encryptedData.slice(0, 12);
-        const data = encryptedData.slice(12);
+        const iv = new Uint8Array(encryptedData.slice(0, 12));
+        const data = new Uint8Array(encryptedData.slice(12));
 
         const decryptedData = await window.crypto.subtle.decrypt(
             {
                 name: "AES-GCM",
-                iv: new Uint8Array(iv)
+                iv: iv
             },
             key,
             data
@@ -104,7 +103,10 @@ async function decrypt(encryptedBase64, keyBase64) {
 
         return arrayBufferToString(decryptedData);
     } catch (error) {
-        throw new Error("Decryption failed. Make sure you're using the correct key.");
+        if (error.message.includes("Invalid key length")) {
+            throw new Error("The key length is incorrect. Make sure you're using the exact key that was generated during encryption.");
+        }
+        throw new Error("Decryption failed. Make sure you're using the correct key and the complete encrypted text.");
     }
 }
 
