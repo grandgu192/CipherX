@@ -6,8 +6,55 @@
     <title>Secure Encryption Tool</title>
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --theme-color: #6610f2;  /* Default purple */
+        }
+        .btn-theme {
+            background-color: var(--theme-color);
+            border-color: var(--theme-color);
+            color: white;
+        }
+        .btn-theme:hover {
+            filter: brightness(90%);
+            color: white;
+        }
+        .card-header {
+            background-color: var(--theme-color);
+            color: white;
+        }
+    </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg mb-4" style="background-color: var(--theme-color);">
+        <div class="container">
+            <span class="navbar-brand text-white">Secure Encryption Tool</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            Theme Settings
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Mode</h6></li>
+                            <li><a class="dropdown-item" href="#" onclick="setTheme('light')">Light</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">Dark</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Color</h6></li>
+                            <li><a class="dropdown-item" href="#" onclick="setColor('#6610f2')">Purple</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setColor('#0d6efd')">Blue</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setColor('#198754')">Green</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setColor('#dc3545')">Red</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -43,7 +90,7 @@
                                 <div class="form-text">Leave empty to generate a new key during encryption</div>
                             </div>
                             <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-primary" id="encryptBtn">Encrypt</button>
+                                <button type="button" class="btn btn-theme" id="encryptBtn">Encrypt</button>
                                 <button type="button" class="btn btn-secondary" id="decryptBtn">Decrypt</button>
                             </div>
                         </form>

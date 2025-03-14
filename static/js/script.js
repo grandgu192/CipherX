@@ -9,6 +9,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const copyKeyBtn = document.getElementById('copyKeyBtn');
     const copyResultBtn = document.getElementById('copyResultBtn');
 
+    // Theme Management
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        localStorage.setItem('theme', theme);
+    }
+
+    function setColor(color) {
+        document.documentElement.style.setProperty('--theme-color', color);
+        localStorage.setItem('themeColor', color);
+    }
+
+    // Load saved theme preferences
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        setTheme(savedTheme);
+    }
+
+    const savedColor = localStorage.getItem('themeColor');
+    if (savedColor) {
+        setColor(savedColor);
+    }
+
+    // Alert System
     function showAlert(message, type) {
         alertBox.className = `alert alert-${type}`;
         alertBox.textContent = message;
@@ -18,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
+    // Clipboard Functions
     async function copyToClipboard(text, successMessage) {
         try {
             await navigator.clipboard.writeText(text);
@@ -39,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Crypto Operations
     async function performCryptoOperation(operation) {
         const data = dataInput.value.trim();
         const key = keyInput.value.trim();
@@ -89,4 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     encryptBtn.addEventListener('click', () => performCryptoOperation('encrypt'));
     decryptBtn.addEventListener('click', () => performCryptoOperation('decrypt'));
+
+    // Make theme functions globally available
+    window.setTheme = setTheme;
+    window.setColor = setColor;
 });
