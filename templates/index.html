@@ -16,6 +16,16 @@
                         <h2 class="text-center mb-0">Secure Encryption Tool</h2>
                     </div>
                     <div class="card-body">
+                        <!-- Format Info -->
+                        <div class="alert alert-info mb-4">
+                            <h5>Format Information:</h5>
+                            <ul class="mb-0">
+                                <li>Encrypted text is in Base64 format</li>
+                                <li>Encryption key must be a 32-byte Base64 string</li>
+                                <li>This tool uses Fernet symmetric encryption</li>
+                            </ul>
+                        </div>
+
                         <!-- Input Form -->
                         <form id="cryptoForm">
                             <div class="mb-3">
@@ -25,11 +35,12 @@
                             <div class="mb-3">
                                 <label for="key" class="form-label">Key (Optional for encryption)</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="key" placeholder="Enter encryption/decryption key">
-                                    <button class="btn btn-outline-secondary" type="button" id="copyKeyBtn">
+                                    <input type="text" class="form-control" id="key" placeholder="Enter base64-encoded key">
+                                    <button class="btn btn-outline-secondary" type="button" id="copyKeyBtn" title="Copy key">
                                         <i class="fa fa-copy"></i>
                                     </button>
                                 </div>
+                                <div class="form-text">Leave empty to generate a new key during encryption</div>
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="button" class="btn btn-primary" id="encryptBtn">Encrypt</button>
@@ -42,10 +53,11 @@
                             <h4>Result:</h4>
                             <div class="input-group">
                                 <textarea class="form-control" id="result" rows="4" readonly></textarea>
-                                <button class="btn btn-outline-secondary" type="button" id="copyResultBtn">
+                                <button class="btn btn-outline-secondary" type="button" id="copyResultBtn" title="Copy result">
                                     <i class="fa fa-copy"></i>
                                 </button>
                             </div>
+                            <div class="form-text mt-2">The result is in Base64 format when encrypted</div>
                         </div>
 
                         <!-- Alert Section -->
@@ -55,12 +67,13 @@
 
                         <!-- Security Notice -->
                         <div class="mt-4">
-                            <div class="alert alert-info">
-                                <h5>Security Notice:</h5>
+                            <div class="alert alert-warning">
+                                <h5>Important Notes:</h5>
                                 <ul class="mb-0">
+                                    <li>This tool uses Fernet symmetric encryption (based on AES)</li>
+                                    <li>Generated keys are 32 bytes, encoded in Base64</li>
                                     <li>Keep your encryption key safe - it cannot be recovered if lost</li>
-                                    <li>Do not share your encryption key with others</li>
-                                    <li>Use unique keys for different sensitive data</li>
+                                    <li>Use this same tool for decryption - other tools may use different encryption methods</li>
                                 </ul>
                             </div>
                         </div>

@@ -24,7 +24,7 @@ def encrypt():
 
         if not data:
             return jsonify({'error': 'Please enter data to encrypt'}), 400
-        
+
         if not key:
             # Generate a new key if none provided
             key = generate_key()
@@ -32,10 +32,15 @@ def encrypt():
         else:
             try:
                 # Validate the provided key
+                if len(key) % 4 != 0:  # Check if it's valid base64
+                    return jsonify({'error': 'Invalid base64 format for key'}), 400
                 key = b64decode(key.encode())
+                if len(key) != 32:  # Fernet requires 32-byte keys
+                    return jsonify({'error': 'Key must be 32 bytes long when decoded'}), 400
                 key_str = key.decode()
-            except Exception:
-                return jsonify({'error': 'Invalid encryption key format'}), 400
+            except Exception as e:
+                logger.error(f"Key validation error: {str(e)}")
+                return jsonify({'error': 'Invalid key format. Key must be base64-encoded and 32 bytes when decoded'}), 400
 
         encrypted_data = encrypt_message(key, data)
         return jsonify({
@@ -44,7 +49,7 @@ def encrypt():
         })
     except Exception as e:
         logger.error(f"Encryption error: {str(e)}")
-        return jsonify({'error': 'An error occurred during encryption'}), 500
+        return jsonify({'error': 'An error occurred during encryption. Make sure all inputs are properly formatted'}), 500
 
 @app.route('/decrypt', methods=['POST'])
 def decrypt():
@@ -56,15 +61,19 @@ def decrypt():
             return jsonify({'error': 'Please provide both encrypted data and key'}), 400
 
         try:
+            if len(key) % 4 != 0:  # Check if it's valid base64
+                return jsonify({'error': 'Invalid base64 format for key'}), 400
             key = b64decode(key.encode())
+            if len(key) != 32:  # Fernet requires 32-byte keys
+                return jsonify({'error': 'Key must be 32 bytes long when decoded'}), 400
         except Exception:
-            return jsonify({'error': 'Invalid key format'}), 400
+            return jsonify({'error': 'Invalid key format. Key must be base64-encoded and 32 bytes when decoded'}), 400
 
         try:
             decrypted_data = decrypt_message(key, encrypted_data)
             return jsonify({'decrypted_data': decrypted_data})
         except InvalidToken:
-            return jsonify({'error': 'Invalid key or corrupted data'}), 400
+            return jsonify({'error': 'Invalid key or corrupted encrypted data. Make sure you are using the correct key and the complete encrypted text'}), 400
     except Exception as e:
         logger.error(f"Decryption error: {str(e)}")
-        return jsonify({'error': 'An error occurred during decryption'}), 500
+        return jsonify({'error': 'An error occurred during decryption. Make sure all inputs are properly formatted'}), 500
