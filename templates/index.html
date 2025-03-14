@@ -41,16 +41,20 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown me-2">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Theme Settings
+                            Theme
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><h6 class="dropdown-header">Mode</h6></li>
                             <li><a class="dropdown-item" href="#" onclick="setTheme('light')">Light</a></li>
                             <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">Dark</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">Color</h6></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Color
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="#" onclick="setColor('#6610f2')">Purple</a></li>
                             <li><a class="dropdown-item" href="#" onclick="setColor('#0d6efd')">Blue</a></li>
                             <li><a class="dropdown-item" href="#" onclick="setColor('#198754')">Green</a></li>
