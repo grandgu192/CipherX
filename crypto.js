@@ -25,8 +25,9 @@ const arrayBufferToString = (buffer) => {
     return new TextDecoder().decode(buffer);
 };
 
-// Crypto functions
+// Generate a secure random key
 async function generateKey() {
+    // Generate a random 32-byte key
     const key = await window.crypto.subtle.generateKey(
         {
             name: "AES-GCM",
@@ -35,13 +36,16 @@ async function generateKey() {
         true,
         ["encrypt", "decrypt"]
     );
-    
     const exportedKey = await window.crypto.subtle.exportKey("raw", key);
     return arrayBufferToBase64(exportedKey);
 }
 
+// Import key from base64 format
 async function importKey(keyBase64) {
     const keyData = base64ToArrayBuffer(keyBase64);
+    if (keyData.byteLength !== 32) {
+        throw new Error("Key must be 32 bytes long");
+    }
     return await window.crypto.subtle.importKey(
         "raw",
         keyData,
@@ -59,7 +63,7 @@ async function encrypt(text, keyBase64) {
         const key = await importKey(keyBase64);
         const iv = window.crypto.getRandomValues(new Uint8Array(12));
         const encodedText = stringToArrayBuffer(text);
-        
+
         const encryptedData = await window.crypto.subtle.encrypt(
             {
                 name: "AES-GCM",
@@ -68,12 +72,12 @@ async function encrypt(text, keyBase64) {
             key,
             encodedText
         );
-        
+
         // Combine IV and encrypted data
         const combined = new Uint8Array(iv.length + encryptedData.byteLength);
         combined.set(iv);
         combined.set(new Uint8Array(encryptedData), iv.length);
-        
+
         return arrayBufferToBase64(combined.buffer);
     } catch (error) {
         throw new Error("Encryption failed: " + error.message);
@@ -84,11 +88,11 @@ async function decrypt(encryptedBase64, keyBase64) {
     try {
         const key = await importKey(keyBase64);
         const encryptedData = base64ToArrayBuffer(encryptedBase64);
-        
+
         // Extract IV and data
         const iv = encryptedData.slice(0, 12);
         const data = encryptedData.slice(12);
-        
+
         const decryptedData = await window.crypto.subtle.decrypt(
             {
                 name: "AES-GCM",
@@ -97,7 +101,7 @@ async function decrypt(encryptedBase64, keyBase64) {
             key,
             data
         );
-        
+
         return arrayBufferToString(decryptedData);
     } catch (error) {
         throw new Error("Decryption failed. Make sure you're using the correct key.");
