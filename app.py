@@ -31,16 +31,14 @@ def encrypt():
             key_str = b64encode(key).decode()
         else:
             try:
-                # Validate the provided key
+                # Validate the provided key is in base64 format
                 if len(key) % 4 != 0:  # Check if it's valid base64
                     return jsonify({'error': 'Invalid base64 format for key'}), 400
                 key = b64decode(key.encode())
-                if len(key) != 32:  # Fernet requires 32-byte keys
-                    return jsonify({'error': 'Key must be 32 bytes long when decoded'}), 400
                 key_str = key.decode()
             except Exception as e:
                 logger.error(f"Key validation error: {str(e)}")
-                return jsonify({'error': 'Invalid key format. Key must be base64-encoded and 32 bytes when decoded'}), 400
+                return jsonify({'error': 'Invalid key format. Key must be base64-encoded'}), 400
 
         encrypted_data = encrypt_message(key, data)
         return jsonify({
@@ -64,10 +62,8 @@ def decrypt():
             if len(key) % 4 != 0:  # Check if it's valid base64
                 return jsonify({'error': 'Invalid base64 format for key'}), 400
             key = b64decode(key.encode())
-            if len(key) != 32:  # Fernet requires 32-byte keys
-                return jsonify({'error': 'Key must be 32 bytes long when decoded'}), 400
         except Exception:
-            return jsonify({'error': 'Invalid key format. Key must be base64-encoded and 32 bytes when decoded'}), 400
+            return jsonify({'error': 'Invalid key format. Key must be base64-encoded'}), 400
 
         try:
             decrypted_data = decrypt_message(key, encrypted_data)
