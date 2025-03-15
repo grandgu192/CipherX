@@ -25,9 +25,16 @@ document.addEventListener('DOMContentLoaded', function() {
     setTheme(savedTheme || 'dark'); // Set dark as default if no theme is saved
 
     const savedColor = localStorage.getItem('themeColor');
+    const colorPicker = document.getElementById('colorPicker');
+    
     if (savedColor) {
         setColor(savedColor);
+        colorPicker.value = savedColor;
     }
+
+    colorPicker.addEventListener('input', (e) => {
+        setColor(e.target.value);
+    });
 
     // Alert System
     function showAlert(message, type) {
