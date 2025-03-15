@@ -24,10 +24,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedTheme = localStorage.getItem('theme');
     setTheme(savedTheme || 'dark'); // Set dark as default if no theme is saved
 
+    const colorPicker = document.getElementById('colorPicker');
     const savedColor = localStorage.getItem('themeColor');
     if (savedColor) {
         setColor(savedColor);
+        colorPicker.value = savedColor;
     }
+
+    // Add color picker event listener
+    colorPicker.addEventListener('input', (e) => {
+        setColor(e.target.value);
+    });
 
     // Alert System
     function showAlert(message, type) {
